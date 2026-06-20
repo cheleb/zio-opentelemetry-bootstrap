@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+  push:
+    branches: [master]
+jobs:
+  CI:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        
+      - name: Setup JVM
+        uses: actions/setup-java@v5
+        with:
+          java-version: "24"
+          distribution: "zulu"
+      - uses: sbt/setup-sbt@v1
+      - name: compile
+        run: sbt compile              
