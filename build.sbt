@@ -11,7 +11,6 @@ inThisBuild(
     scalaVersion := scala3,
     organization := "dev.cheleb",
     homepage := Some(url("https://github.com/cheleb/")),
-    scalacOptions ++= usedScalacOptions,
     pgpPublicRing := file("/tmp/public.asc"),
     pgpSecretRing := file("/tmp/secret.asc"),
     pgpPassphrase := sys.env.get("PGP_PASSWORD").map(_.toArray),
