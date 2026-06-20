@@ -14,7 +14,7 @@ A ZIO library providing a bootstrap layer for OpenTelemetry integration with ZIO
 Add the dependency to your `build.sbt`:
 
 ```scala
-libraryDependencies += "sttp.tapir" %% "zio-opentelemetry-bootstrap" % "0.1.0-SNAPSHOT"
+libraryDependencies += "sttp.tapir" %% "zio-opentelemetry-bootstrap" % "0.0.1"
 ```
 
 ## Usage
