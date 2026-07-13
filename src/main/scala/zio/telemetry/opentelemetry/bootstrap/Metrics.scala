@@ -22,7 +22,8 @@ import io.opentelemetry.sdk.metrics.SdkMeterProviderBuilder
 
 /** Provides metrics for the application.
   *
-  * This trait is used to provide metrics for the application. It is used by the [[ZIOpenTelemetryApp]] trait.
+  * This trait is used to provide metrics for the application. It is used by the
+  * [[ZIOpenTelemetryApp]] trait.
   */
 trait Metrics {
   this: ZIOpenTelemetryApp =>
@@ -31,22 +32,31 @@ trait Metrics {
   def collectZioMetrics: Boolean = true
 
   /** Allows to customize the OTLP gRPC metric exporter. */
-  def customMetricExporter(exporter: OtlpGrpcMetricExporterBuilder): OtlpGrpcMetricExporterBuilder = exporter
+  def customMetricExporter(
+      exporter: OtlpGrpcMetricExporterBuilder
+  ): OtlpGrpcMetricExporterBuilder = exporter
 
-  /** Provides a meter provider for OpenTelemetry, which exports metrics in OTLP gRPC format with [[MeterProvider]]
+  /** Provides a meter provider for OpenTelemetry, which exports metrics in OTLP
+    * gRPC format with
+    * [[io.opentelemetry.exporter.otlp.metrics.OtlpGrpcMetricExporterBuilder]]
     *
-    * If `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE` environment variable is set to "DELTA" (case insensitive), the exporter will be
-    * DELTA.
+    * If `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE` environment
+    * variable is set to "DELTA" (case insensitive), the exporter will be DELTA.
     *
     * @return
     */
-  def metricExporter(endpoint: String, preference: AggregationTemporality): OtlpGrpcMetricExporter = {
+  def metricExporter(
+      endpoint: String,
+      preference: AggregationTemporality
+  ): OtlpGrpcMetricExporter = {
     val builder = OtlpGrpcMetricExporter
       .builder()
 
     val preferenceSelector = preference match {
-      case AggregationTemporality.DELTA => AggregationTemporalitySelector.deltaPreferred()
-      case AggregationTemporality.CUMULATIVE => AggregationTemporalitySelector.alwaysCumulative()
+      case AggregationTemporality.DELTA =>
+        AggregationTemporalitySelector.deltaPreferred()
+      case AggregationTemporality.CUMULATIVE =>
+        AggregationTemporalitySelector.alwaysCumulative()
     }
 
     builder.setAggregationTemporalitySelector(preferenceSelector)
@@ -59,20 +69,25 @@ trait Metrics {
 
   /** The OTLP endpoint to use for metrics.
     *
-    * Uses the [[OtlpEnv#otelMetricsEndpoint]] method to determine the endpoint, can be overridden to provide a different endpoint logic.
+    * Uses the [[OtlpEnv#otelMetricsEndpoint]] method to determine the endpoint,
+    * can be overridden to provide a different endpoint logic.
     *
-    * Returns `None` if no endpoint is configured, in which case the OpenTelemetry metrics layer will not be configured.
+    * Returns `None` if no endpoint is configured, in which case the
+    * OpenTelemetry metrics layer will not be configured.
     *
     * @return
     */
-  def meterEndpoint: ZIO[Any, Nothing, Option[String]] = OtlpEnv.otelMetricsEndpoint
+  def meterEndpoint: ZIO[Any, Nothing, Option[String]] =
+    OtlpEnv.otelMetricsEndpoint
 
-  /** Provides a meter provider for OpenTelemetry, which logs in OTLP Json format as gRPC if either of the following environment variables
-    * is set:
+  /** Provides a meter provider for OpenTelemetry, which logs in OTLP Json
+    * format as gRPC if either of the following environment variables is set:
     *   - `OTEL_EXPORTER_OTLP_METRICS_ENDPOINT`
     *   - `OTEL_EXPORTER_OTLP_ENDPOINT`
-    * If `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE` environment variable is set to "DELTA" (case insensitive), the exporter will be
-    * configured to prefer delta temporality for metrics, otherwise it will use the default cumulative temporality.
+    * If `OTEL_EXPORTER_OTLP_METRICS_TEMPORALITY_PREFERENCE` environment
+    * variable is set to "DELTA" (case insensitive), the exporter will be
+    * configured to prefer delta temporality for metrics, otherwise it will use
+    * the default cumulative temporality.
     */
   override def meterProvider: URIO[Scope, Option[SdkMeterProvider]] =
     for {
@@ -84,9 +99,13 @@ trait Metrics {
     } yield endpoint
 
   /** Allows to customize the periodic metric reader. */
-  def customMetricReader(reader: PeriodicMetricReaderBuilder): PeriodicMetricReaderBuilder = reader
+  def customMetricReader(
+      reader: PeriodicMetricReaderBuilder
+  ): PeriodicMetricReaderBuilder = reader
 
-  private def metricReader(metricExporter: OtlpGrpcMetricExporter): MetricReader =
+  private def metricReader(
+      metricExporter: OtlpGrpcMetricExporter
+  ): MetricReader =
     customMetricReader(
       PeriodicMetricReader
         .builder(metricExporter)
@@ -94,7 +113,9 @@ trait Metrics {
     ).build()
 
   /** Allows to customize the meter provider. */
-  def customizeSdkMeterProvider(builder: SdkMeterProviderBuilder): SdkMeterProviderBuilder = builder
+  def customizeSdkMeterProvider(
+      builder: SdkMeterProviderBuilder
+  ): SdkMeterProviderBuilder = builder
 
   /** Creates a meter provider for OpenTelemetry
     */
@@ -133,11 +154,14 @@ trait Metrics {
         )
     } yield meterProvider
 
-  override def zioMetrics: URLayer[io.opentelemetry.api.OpenTelemetry & ContextStorage, Unit] =
-    if (collectZioMetrics) OpenTelemetry.metrics("zio") >>> OpenTelemetry.zioMetrics
+  override def zioMetrics
+      : URLayer[io.opentelemetry.api.OpenTelemetry & ContextStorage, Unit] =
+    if (collectZioMetrics)
+      OpenTelemetry.metrics("zio") >>> OpenTelemetry.zioMetrics
     else ZLayer.unit
 
-  /** A OpenTelemetry metrics layer, with configurable instrumentation scope name, version and schema url.
+  /** A OpenTelemetry metrics layer, with configurable instrumentation scope
+    * name, version and schema url.
     *
     * @param instrumentationScopeName
     * @param instrumentationVersion
@@ -147,13 +171,16 @@ trait Metrics {
     */
   override def otel4zMetrics(
       instrumentationScopeName: String
-  ): URLayer[io.opentelemetry.api.OpenTelemetry & ContextStorage, Meter] = OpenTelemetry.metrics(
-    instrumentationScopeName = instrumentationScopeName
-  )
+  ): URLayer[io.opentelemetry.api.OpenTelemetry & ContextStorage, Meter] =
+    OpenTelemetry.metrics(
+      instrumentationScopeName = instrumentationScopeName
+    )
 
-  /** A OpenTelemetry metrics interceptor for tapir, with configurable instrumentation scope name.
+  /** A OpenTelemetry metrics interceptor for tapir, with configurable
+    * instrumentation scope name.
     *
-    * It uses the OpenTelemetry instance from the environment, which is provided by the [[ZIOpenTelemetry]] trait bootstrap layer.
+    * It uses the OpenTelemetry instance from the environment, which is provided
+    * by the [[ZIOpenTelemetry]] trait bootstrap layer.
     *
     * @param instrumentationScopeName
     * @param otel

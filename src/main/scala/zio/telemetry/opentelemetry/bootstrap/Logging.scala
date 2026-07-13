@@ -9,31 +9,36 @@ import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogRecordExporter
 import io.opentelemetry.sdk.logs.`export`.SimpleLogRecordProcessor
 import io.opentelemetry.sdk.resources.Resource
 
-/** A trait that provides a logger provider for OpenTelemetry, which logs in OTLP gRPC format with [[LoggerProvider]]
+/** A trait that provides a logger provider for OpenTelemetry, which logs in
+  * OTLP gRPC format with [[io.opentelemetry.sdk.logs.SdkLoggerProvider]]
   */
 trait Logging {
   this: ZIOpenTelemetryApp =>
 
   /** The log level to use for the OpenTelemetry logger provider.
     *
-    * Uses the [[OtlpEnv#logLevel]] method to determine the log level, can be overridden to provide a different log level logic.
+    * Uses the [[OtlpEnv#logLevel]] method to determine the log level, can be
+    * overridden to provide a different log level logic.
     *
-    * By default, this is set to `INFO`. You can override this to change the log level, e.g. to `DEBUG` for more verbose logging.
+    * By default, this is set to `INFO`. You can override this to change the log
+    * level, e.g. to `DEBUG` for more verbose logging.
     */
   def logLevel = OtlpEnv.logLevel
 
   /** The OTLP endpoint to use for logging.
-    * 
-    * Uses the [[OtlpEnv#otelLogEndpoint]] method to determine the endpoint, can be overridden to provide a different endpoint logic.
-    * 
-    * Returns `None` if no endpoint is configured, in which case the OpenTelemetry logging layer will not be configured.
+    *
+    * Uses the [[OtlpEnv#otelLogEndpoint]] method to determine the endpoint, can
+    * be overridden to provide a different endpoint logic.
+    *
+    * Returns `None` if no endpoint is configured, in which case the
+    * OpenTelemetry logging layer will not be configured.
     *
     * @return
     */
   def logEndpoint = OtlpEnv.otelLogEndpoint
 
-
-  /** Provides a logger provider for OpenTelemetry, which logs in OTLP gRPC format with [[LoggerProvider]]
+  /** Provides a logger provider for OpenTelemetry, which logs in OTLP gRPC
+    * format with [[io.opentelemetry.sdk.logs.SdkLoggerProvider]]
     */
   override def logProvider: URIO[Scope, Option[SdkLoggerProvider]] = for {
 
@@ -82,8 +87,10 @@ trait Logging {
     *
     * @return
     */
-  override def otel4zLogging: URLayer[api.OpenTelemetry with ContextStorage, Unit] = OpenTelemetry.logging(
-    instrumentationScopeName = resourceName,
-    logLevel = logLevel
-  )
+  override def otel4zLogging
+      : URLayer[api.OpenTelemetry with ContextStorage, Unit] =
+    OpenTelemetry.logging(
+      instrumentationScopeName = resourceName,
+      logLevel = logLevel
+    )
 }
