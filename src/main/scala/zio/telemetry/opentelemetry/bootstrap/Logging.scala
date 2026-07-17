@@ -6,7 +6,7 @@ import io.opentelemetry.sdk.logs.SdkLoggerProvider
 import zio.telemetry.opentelemetry.context.ContextStorage
 import zio.telemetry.opentelemetry.OpenTelemetry
 import io.opentelemetry.exporter.otlp.logs.OtlpGrpcLogRecordExporter
-import io.opentelemetry.sdk.logs.`export`.SimpleLogRecordProcessor
+import io.opentelemetry.sdk.logs.`export`.BatchLogRecordProcessor
 import io.opentelemetry.sdk.resources.Resource
 
 /** A trait that provides a logger provider for OpenTelemetry, which logs in
@@ -65,7 +65,9 @@ trait Logging {
         )
       logRecordProcessor <-
         ZIO.fromAutoCloseable(
-          ZIO.succeed(SimpleLogRecordProcessor.create(logRecordExporter))
+          ZIO.succeed(
+            BatchLogRecordProcessor.builder(logRecordExporter).build()
+          )
         )
       loggerProvider <-
         ZIO.fromAutoCloseable(
