@@ -3,7 +3,7 @@ lazy val scala213 = "2.13.18"
 lazy val scala3 = "3.3.8"
 lazy val supportedScalaVersions = List(scala212, scala213, scala3)
 
-ThisBuild / scalaVersion := scala213
+ThisBuild / scalaVersion := scala3
 
 inThisBuild(
   List(
