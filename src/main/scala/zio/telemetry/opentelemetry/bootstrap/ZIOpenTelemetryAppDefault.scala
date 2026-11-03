@@ -1,10 +1,6 @@
 package zio.telemetry.opentelemetry.bootstrap
 
-import io.opentelemetry.api
 import zio._
-import zio.telemetry.opentelemetry.context.ContextStorage
-import zio.telemetry.opentelemetry.metrics.Meter
-import zio.telemetry.opentelemetry.tracing.Tracing
 
 /** ZIOtelAppDefault provides a default implementation of the ZIOtel trait.
   *
@@ -29,7 +25,7 @@ abstract class ZIOpenTelemetryAppDefault(
     *   - the Meter instance.
     *   - the Tracing instance.
     */
-  override type Environment = api.OpenTelemetry with ContextStorage with Meter with Tracing
+  override type Environment = ZIOpenTelemetryAppDefault.DefaultEnvironment
 
   /** The tag for the ZIOpenTelemetry trait. */
   def environmentTag: Tag[Environment] =
@@ -43,3 +39,9 @@ abstract class ZIOpenTelemetryAppDefault(
   override def bootstrap: ZLayer[ZIOAppArgs, Any, Environment] =
     observabilityLayer
 }
+
+/** Companion of [[ZIOpenTelemetryAppDefault]].
+  *
+  * Exposes `DefaultEnvironment`, defined per Scala version in [[DefaultEnvironmentCompat]].
+  */
+object ZIOpenTelemetryAppDefault extends DefaultEnvironmentCompat

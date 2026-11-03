@@ -1,6 +1,6 @@
 object Versions {
-  val zio = "2.1.26"
-  val zioOpenTelemetry = "3.1.19"
-  val openTelemetry = "1.65.0"
-  val openTelemetrySemconvVersion = "1.43.0"
+  val zio = "2.1.27"
+  val zioOpenTelemetry = "3.1.21"
+  val openTelemetry = "1.67.0"
+  val openTelemetrySemconvVersion = "1.45.0"
 }

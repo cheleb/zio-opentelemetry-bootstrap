@@ -23,7 +23,6 @@ import zio.telemetry.opentelemetry.tracing.propagation.TraceContextPropagator
 import zio.telemetry.opentelemetry.metrics.Meter
 
 import scala.collection.mutable
-import zio.telemetry.opentelemetry.bootstrap.{OtelProviders, OtlpEnv, ZIOpenTelemetryAppDefault}
 import zio.telemetry.opentelemetry.bootstrap.noop.{NoopMeter, NoopTracing}
 
 object ZIOpenTelemetryBootstrapSpec extends ZIOSpecDefault {

@@ -44,7 +44,7 @@ case class OtelProviders(
 
 trait ZIOpenTelemetryApp extends ZIOApp {
 
-  type Environment <: api.OpenTelemetry with ContextStorage
+  type Environment <: api.OpenTelemetry & ContextStorage
 
   def resourceName: String
 
@@ -58,10 +58,10 @@ trait ZIOpenTelemetryApp extends ZIOApp {
     * trait, this layer is provided, and will be used by bootstrap.
     */
   protected def otel4zLogging
-      : URLayer[api.OpenTelemetry with ContextStorage, Unit] = ZLayer.unit
+      : URLayer[api.OpenTelemetry & ContextStorage, Unit] = ZLayer.unit
 
   protected def zioMetrics
-      : URLayer[api.OpenTelemetry with ContextStorage, Unit] = ZLayer.unit
+      : URLayer[api.OpenTelemetry & ContextStorage, Unit] = ZLayer.unit
 
   /** The OpenTelemetry [[io.opentelemetry.sdk.logs.SdkLoggerProvider]] for the
     * ZIOpenTelemetry trait.

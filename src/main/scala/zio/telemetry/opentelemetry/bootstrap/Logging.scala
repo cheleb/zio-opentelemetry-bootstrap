@@ -90,7 +90,7 @@ trait Logging {
     * @return
     */
   override def otel4zLogging
-      : URLayer[api.OpenTelemetry with ContextStorage, Unit] =
+      : URLayer[api.OpenTelemetry & ContextStorage, Unit] =
     OpenTelemetry.logging(
       instrumentationScopeName = resourceName,
       logLevel = logLevel
